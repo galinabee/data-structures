@@ -9,6 +9,7 @@
 public class Node<E> implements Comparable<E> {
 	private E value;
 	private Node<E> next;
+    private Node<E> previous;
 
     public Node(){};
 
@@ -31,6 +32,10 @@ public class Node<E> implements Comparable<E> {
 	public Node<E> getNext() {
 		return next;
 	}
+
+	public void setPrevious(Node<E> p){ previous = p; }
+
+    public Node<E> getPrevious() { return previous; }
 
 	@Override
 	public int compareTo(Object o) {
