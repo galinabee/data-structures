@@ -20,6 +20,25 @@ public class DoublyLinkedList<E> {
     }
 
     /**
+     * Appending a node at the end
+     * @param node the node to place at end
+     * @return the node
+     */
+    public Node<E> append(Node<E> node){
+        this.addToEnd(node);
+        return node;
+    }
+
+    /**
+     * Gets the size of the DLL
+     *
+     * @return the size
+     */
+    public int getSize(){
+        return size;
+    }
+
+    /**
      * Adding a node to end
      * Similar to stack
      *
@@ -27,10 +46,12 @@ public class DoublyLinkedList<E> {
      * @return the node added
      */
     public Node<E> addToEnd(Node<E> node){
-        node.setNext(tail);
-        node.setPrevious(tail.getPrevious());
-        tail.getPrevious().setNext(node);
+        Node<E> previous = tail.getPrevious();
+
+        previous.setNext(node);
+        node.setPrevious(previous);
         tail.setPrevious(node);
+        node.setNext(tail);
         size++;
 
         return node;
@@ -54,8 +75,8 @@ public class DoublyLinkedList<E> {
 
     /**
      * Removing a particular value
-     * @param e
-     * @return
+     * @param e the value to remove
+     * @return the node that was removed or null
      */
     public Node<E> remove(E e)    {
         Node<E> current = head.getNext();
@@ -73,6 +94,39 @@ public class DoublyLinkedList<E> {
         return null;
     }
 
+    /**
+     * Removing from a certain index
+     * @param index the index from which to remove
+     * @return the node that was removed
+     */
+    public Node<E> removeAtIndex(int index){
+        if (index >= size){ return null; }
+        Node<E> current;
+        // 5 - 1 > 2 go from beginning
+        if (size - index > size/2)  {
+            current = head;
+            for (int i = 0; i <= index; i++){
+                current = current.getNext();
+            }
+        }   else    {
+            current = tail;
+            for (int i = size; i >= index; i--){
+                current = current.getPrevious();
+            }
+        }
+        current.getPrevious().setNext(current.getNext());
+        current.getNext().setPrevious(current.getPrevious());
+        current.setNext(null);
+        current.setPrevious(null);
+        size--;
+        return current;
+    }
+
+    /**
+     * Creates an array of nodes
+     *
+     * @return the array of nodes
+     */
     public Node<E>[] toArray(){
         Node<E>[] array = new Node[size];
         Node<E> current = head.getNext();
@@ -81,6 +135,67 @@ public class DoublyLinkedList<E> {
             current = current.getNext();
         }
         return array;
+    }
+
+    /**
+     * Returns the first node that has the value
+     * @param e the value to look for
+     * @return the node or null
+     */
+    public Node<E> get(E e){
+        Node<E> current = head.getNext();
+        while (current != tail) {
+            if (current.getValue() == e) {
+                return current;
+            }
+            current = current.getNext();
+        }
+        return null;
+    }
+
+    /**
+     * Removes a particular found node
+     * @param node the node address you want removed
+     * @return true if found and removed, false if not
+     */
+    public boolean removeNode(Node<E> node){
+        Node<E> current = head.getNext();
+        while (current != tail) {
+            if (current.equals(node)) {
+                current.getPrevious().setNext(current.getNext());
+                current.getNext().setPrevious(current.getPrevious());
+                current.setNext(null);
+                current.setPrevious(null);
+                size--;
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+
+    /**
+     * Gets the first node
+     *
+     * @return the first node or null if it is tail node
+     */
+    public Node<E> getFirst(){
+        Node<E> toReturn = head.getNext();
+        return toReturn == tail ? null: toReturn;
+    }
+    /**
+     * Clears the DLL
+     * @return true if cleared, false if it does not need to be cleared
+     */
+    public boolean clear(){
+        if (head.getNext() == tail && tail.getPrevious() == head) return false;
+
+        head.setNext(tail);
+        tail.setPrevious(head);
+        head.setPrevious(null);
+        tail.setNext(null);
+        size = 0;
+        return head.getNext() == tail && tail.getPrevious() == head;
     }
 
     @Override
